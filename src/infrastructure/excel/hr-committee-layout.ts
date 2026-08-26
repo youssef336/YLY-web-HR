@@ -73,13 +73,13 @@ export function injectHrCalculationFormulas(
   lastRow: number = HR_TEMPLATE.lastDataRow,
 ): void {
   for (let row = firstRow; row <= lastRow; row++) {
-    sheet.getCell(`BN${row}`).value = `=ROUND(SUM(BK${row}:BM${row}), 2)`;
-    sheet.getCell(`CE${row}`).value = `=IFERROR(ROUND(SUM(BP${row}:CD${row}) / BO${row} * 30, 0), 0)`;
-    sheet.getCell(`CV${row}`).value = `=IFERROR(ROUND(SUM(CG${row}:CU${row}) / CF${row} * 20, 0), 0)`;
-    sheet.getCell(`CZ${row}`).value = `=ROUND(SUM(BN${row},CE${row},CV${row},CW${row},CX${row},CY${row}), 2)`;
-    sheet.getCell(`DA${row}`).value = `=IFERROR(ROUND(CZ${row}/110*100, 1), 0)`;
-    sheet.getCell(`DB${row}`).value = `=IF(CZ${row}>=90,"A",IF(CZ${row}>=80,"B",IF(CZ${row}>=70,"C",IF(CZ${row}>=60,"D",IF(CZ${row}>0,"F"," ")))))`;
-    sheet.getCell(`DE${row}`).value = `=IF(A${row}="","",DA${row}-ROW()/100000000)`;
+    sheet.getCell(`BN${row}`).value = { formula: `=ROUND(SUM(BK${row}:BM${row}), 2)` };
+    sheet.getCell(`CE${row}`).value = { formula: `=IFERROR(ROUND(SUM(BP${row}:CD${row}) / BO${row} * 30, 0), 0)` };
+    sheet.getCell(`CV${row}`).value = { formula: `=IFERROR(ROUND(SUM(CG${row}:CU${row}) / CF${row} * 20, 0), 0)` };
+    sheet.getCell(`CZ${row}`).value = { formula: `=ROUND(SUM(BN${row},CE${row},CV${row},CW${row},CX${row},CY${row}), 2)` };
+    sheet.getCell(`DA${row}`).value = { formula: `=IFERROR(ROUND(CZ${row}/110*100, 1), 0)` };
+    sheet.getCell(`DB${row}`).value = { formula: `=IF(CZ${row}>=90,"A",IF(CZ${row}>=80,"B",IF(CZ${row}>=70,"C",IF(CZ${row}>=60,"D",IF(CZ${row}>0,"F"," ")))))` };
+    sheet.getCell(`DE${row}`).value = { formula: `=IF(A${row}="","",DA${row}-ROW()/100000000)` };
   }
 }
 
