@@ -13,13 +13,12 @@
  *   BP..CD (15) = Meeting scores (0/1) — 15 columns
  *   CF  = Field Visits Entered (FORMULA — NEVER written)
  *   CG..CU (15) = Field Visit scores (0/1) — 15 columns
- *   CV  = Interaction /10 (direct input)
- *   CW  = Respect Hierarchy /10 (direct input)
- *   CX  = Bonus /10 (direct input)
+ *   CV  = Field Visits Total (formula — NEVER written)
+ *   CW  = Interaction /10 (direct input)
+ *   CX  = Respect Hierarchy /10 (direct input)
+ *   CY  = Bonus /10 (direct input)
  *   BN  = Tasks Total (formula)
  *   CE  = Meetings Total (formula)
- *   CV  = Field Visits Total (formula)
- *   CW..CY = direct category inputs
  *   CZ  = Final Total (formula)
  *   DA  = Percentage (formula)
  *   DB  = Grade (formula)

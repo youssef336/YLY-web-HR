@@ -225,11 +225,12 @@ export function parseTemplateLayout(sheet: ExcelJS.Worksheet): ParsedTemplateLay
 
   // --- Determine trailing columns (Interaction, Respect, Bonus) ---
   // These come after the field visits section.
-  const visitsEndCol = fieldVisitsStartCol + fieldVisitCount;
-  // CV is the field-visits total; category inputs follow it.
-  const interactionCol = visitsEndCol + 2;    // typically CW
-  const respectHierarchyCol = visitsEndCol + 3; // typically CX
-  const bonusCol = visitsEndCol + 4;          // typically CY
+  // CG..CU (15 cols) = field visits, CV = Field Visits Total (formula),
+  // then CW = Interaction, CX = Respect Hierarchy, CY = Bonus.
+  const visitsEndCol = fieldVisitsStartCol + fieldVisitCount; // = CV (formula)
+  const interactionCol = visitsEndCol + 1;    // CW
+  const respectHierarchyCol = visitsEndCol + 2; // CX
+  const bonusCol = visitsEndCol + 3;          // CY
 
   // --- Determine count columns ---
   // "Tasks Entered" is one column before tasksStartCol
