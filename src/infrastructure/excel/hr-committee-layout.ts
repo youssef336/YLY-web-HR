@@ -16,9 +16,14 @@
  *   CV  = Interaction /10 (direct input)
  *   CW  = Respect Hierarchy /10 (direct input)
  *   CX  = Bonus /10 (direct input)
- *   CY  = Total (template formula)
- *   CZ  = % (template formula)
- *   DA  = Grade (template formula)
+ *   BN  = Tasks Total (formula)
+ *   CE  = Meetings Total (formula)
+ *   CV  = Field Visits Total (formula)
+ *   CW..CY = direct category inputs
+ *   CZ  = Final Total (formula)
+ *   DA  = Percentage (formula)
+ *   DB  = Grade (formula)
+ *   DE  = Tie-breaker (formula)
  *
  * Template layout:
  *   row 2 = dark blue section headers (static text)
@@ -60,6 +65,23 @@ export const MAX_MEETINGS = 15;
 
 export const MAX_REGISTRY_ROWS =
   HR_TEMPLATE.lastDataRow - HR_TEMPLATE.firstDataRow + 1;
+
+/** Inject every HR calculation formula for the complete template registry. */
+export function injectHrCalculationFormulas(
+  sheet: import('exceljs').Worksheet,
+  firstRow: number = HR_TEMPLATE.firstDataRow,
+  lastRow: number = HR_TEMPLATE.lastDataRow,
+): void {
+  for (let row = firstRow; row <= lastRow; row++) {
+    sheet.getCell(`BN${row}`).value = `=ROUND(SUM(BK${row}:BM${row}), 2)`;
+    sheet.getCell(`CE${row}`).value = `=IFERROR(ROUND(SUM(BP${row}:CD${row}) / BO${row} * 30, 0), 0)`;
+    sheet.getCell(`CV${row}`).value = `=IFERROR(ROUND(SUM(CG${row}:CU${row}) / CF${row} * 20, 0), 0)`;
+    sheet.getCell(`CZ${row}`).value = `=ROUND(SUM(BN${row},CE${row},CV${row},CW${row},CX${row},CY${row}), 2)`;
+    sheet.getCell(`DA${row}`).value = `=IFERROR(ROUND(CZ${row}/110*100, 1), 0)`;
+    sheet.getCell(`DB${row}`).value = `=IF(CZ${row}>=90,"A",IF(CZ${row}>=80,"B",IF(CZ${row}>=70,"C",IF(CZ${row}>=60,"D",IF(CZ${row}>0,"F"," ")))))`;
+    sheet.getCell(`DE${row}`).value = `=IF(A${row}="","",DA${row}-ROW()/100000000)`;
+  }
+}
 
 /**
  * Get the ExcelJS column index (1-based) for a specific metric of a task.

@@ -9,6 +9,8 @@ import {
   HR_TEMPLATE,
   MAX_FIELD_VISITS,
   MAX_MEETINGS,
+  MAX_REGISTRY_ROWS,
+  injectHrCalculationFormulas,
 } from './hr-committee-layout';
 import { parseTemplateLayout, taskColIndex, type ParsedTemplateLayout } from './template-parser';
 
@@ -19,8 +21,8 @@ import { parseTemplateLayout, taskColIndex, type ParsedTemplateLayout } from './
  * Template fidelity rules:
  *   - Loads the ORIGINAL .xlsx from public/exel need/ via workbook.xlsx.load().
  *   - NEVER creates a new workbook or worksheet — modifies the existing one.
- *   - ONLY writes to cells that have actual data to inject.
- *   - NEVER touches formula columns (B, BO, CF, CY, CZ, DA).
+ *   - Writes member data only when it exists, then restores all HR formulas
+ *     across the complete template registry.
  *   - Strips cached formula results so Excel recalculates on open.
  */
 export class ExceljsInjector implements ExcelGenerator {
@@ -81,8 +83,11 @@ export class ExceljsInjector implements ExcelGenerator {
       return a.member.name.localeCompare(b.member.name);
     });
 
-    sorted.forEach((profile, index) => {
+    for (let index = 0; index < MAX_REGISTRY_ROWS; index++) {
+      const profile = sorted[index];
       const row = sheet.getRow(layout.firstDataRow + index);
+
+      if (!profile) continue;
 
       // Name (column A)
       row.getCell(layout.nameCol).value = profile.member.name;
@@ -111,7 +116,9 @@ export class ExceljsInjector implements ExcelGenerator {
       row.getCell(layout.interactionCol).value = profile.scores?.interaction ?? 0;
       row.getCell(layout.respectHierarchyCol).value = profile.scores?.respectHierarchy ?? 0;
       row.getCell(layout.bonusCol).value = profile.scores?.bonus ?? 0;
-    });
+    }
+
+    injectHrCalculationFormulas(sheet, layout.firstDataRow, HR_TEMPLATE.lastDataRow);
 
     const buffer = await workbook.xlsx.writeBuffer();
     return new Uint8Array(buffer as ArrayBuffer);

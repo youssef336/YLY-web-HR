@@ -4,6 +4,7 @@ import {
   MAX_FIELD_VISITS,
   MAX_MEETINGS,
   MAX_REGISTRY_ROWS,
+  injectHrCalculationFormulas,
 } from './hr-committee-layout';
 import { parseTemplateLayout, taskColIndex, type ParsedTemplateLayout } from './template-parser';
 
@@ -328,9 +329,11 @@ export async function mergeExcelFiles(
   }
 
   // 4. Write remapped rows to master template
-  for (let i = 0; i < allRemappedRows.length; i++) {
+  for (let i = 0; i < MAX_REGISTRY_ROWS; i++) {
     const data = allRemappedRows[i];
     const row = masterSheet.getRow(firstDataRow + i);
+
+    if (!data) continue;
 
     row.getCell(masterLayout.nameCol).value = data.name;
 
@@ -365,6 +368,8 @@ export async function mergeExcelFiles(
       row.getCell(masterLayout.fieldVisitsCountCol).value = targets.fieldVisits;
     }
   }
+
+  injectHrCalculationFormulas(masterSheet, masterLayout.firstDataRow, HR_TEMPLATE.lastDataRow);
 
   // 6. Strip cached formula results so Excel recalculates on open
   masterSheet.eachRow((row) => {

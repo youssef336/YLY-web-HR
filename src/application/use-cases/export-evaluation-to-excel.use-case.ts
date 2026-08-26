@@ -7,8 +7,8 @@ import type { MemberProfile } from '@/domain/entities/member-profile';
  * (one member per registry row, ranked by total score descending).
  *
  * Fetches global events so the injector can write header labels (row 3)
- * from the global event names/dates. Only data-entry cells are written;
- * formula columns are never touched.
+ * from the global event names/dates. The injector restores formulas for the
+ * complete template registry after writing data-entry cells.
  */
 export class ExportEvaluationToExcelUseCase {
   constructor(
